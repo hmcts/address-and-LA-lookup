@@ -1,0 +1,89 @@
+
+
+
+$(document).ready(function(){
+
+  $("#searchBox").on("keyup", function() {
+    var value = $(this).val().toLowerCase();
+
+    $("#reportList tr").filter(function() {
+      $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+    });
+  });
+});
+
+
+
+window.addEventListener('load', function () {
+var table = document.getElementById("reportList");
+//alert("row count "+ );
+var rowCount = table.rows.length;
+
+document.getElementById("test").innerText="Number of reports : " + rowCount;
+})
+
+
+-----
+
+ <!-- Start : get the files -->
+    <script language="JavaScript">
+      // Create a connection to the file.
+      var Connect = new XMLHttpRequest();
+      // Define which file to open and
+      
+      
+      Connect.open("GET", "https://riskassessmentpoc.blob.core.windows.net/riskassesment?restype=container&comp=list", false);
+      Connect.setRequestHeader("Upgrade-Insecure-Requests","1");
+      //Connect.setRequestHeader("DNT","1");
+      Connect.setRequestHeader('X-Requested-With', 'XMLHttpRequest'); 
+      Connect.setRequestHeader('Access-Control-Allow-Origin', '*');
+      Connect.setRequestHeader("Accept","text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9");
+      Connect.setRequestHeader("Content-Type", "text/xml");
+      // send the request.
+  
+      Connect.send();
+      // Place the response in an XML document.
+    
+      var TheDocument = Connect.responseXML;
+      //console.log(TheDocument);
+  
+      
+      // Place the root node in an element.
+      var blobs = TheDocument.childNodes[0];
+  
+      var blobs = blobs.childNodes[0];
+  
+      //const serializer = new XMLSerializer();
+      //const xmlStr = serializer.serializeToString(blobs);
+  
+      //console.log("^^^^^^^^^^^^^^^^^^^^^ > " + xmlStr);
+  
+      //  console.log("------------------- > " + blobs.children.length);
+      // Retrieve each blob in turn.
+      
+
+      for (var i = 0; i < blobs.children.length; i++)
+      {
+       var blobDetails = blobs.children[i];
+     
+  
+       
+       // Access each of the data values.
+       var Name = blobDetails.getElementsByTagName("Name");
+       var url = blobDetails.getElementsByTagName("Url");
+	//console.log("------- > " + encodeURIComponent(url[0].textContent.toString()));
+	//console.log("+++++++++++++++++++++ > " + url[0].textContent.toString().replace(/ /g,"%20"));
+       var modifiedDate = blobDetails.getElementsByTagName("Last-Modified");
+
+      document.write("<tr class=\"govuk-table__row\"><td class=\"govuk-table__cell\">");
+      document.write("<a href=");
+      document.write(url[0].textContent.toString().replace(/ /g,"%20"));
+      document.write(">");
+      document.write(Name[0].textContent.toString());
+      document.write("</a>");
+      document.write("</td>");
+      document.write("<td class=\"govuk-table__cell\">");
+      document.write(modifiedDate[0].textContent.toString());
+      document.write("</td></tr>")
+      }
+    </script>
