@@ -29,20 +29,8 @@
   <![endif]-->
 
   <meta property="og:image" content="govuk-opengraph-image.png">
- <link
-      rel="icon"
-      type="image/svg+xml"
-      href="https://img.ideal-postcodes.co.uk/favicon.svg"
-    />
-    <link
-      rel="icon"
-      type="image/x-icon"
-      href="https://img.ideal-postcodes.co.uk/favicon.ico"
-    />
-    <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/css?family=Roboto:300,300italic,700,700italic"
-    />
+
+
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.css"
@@ -94,6 +82,7 @@
     <label for="postcode">Postcode</label>
     <input type="text" id="postcode" />
     <script>
+      
       IdealPostcodes.PostcodeLookup.setup({
         apiKey: "iddqd",
         context: "#postcode_lookup",
@@ -107,7 +96,33 @@
       });
     </script>
   
+  <label for="local_authority">Local Authority</label>
+  <input type="text" id="local_authority" />
+  <input type=button name="get_LA" onclick="httpGetAsync()"/>
+<!-- Lets get Local authority -->
+<script>
+function httpGetAsync()
+{
+    var theUrl="http://postcodes.io/postcodes/"+document.getElementById("postcode").value;
+    //alert(theUrl);
+    var xmlHttp = new XMLHttpRequest();
+    xmlHttp.onreadystatechange = function() { 
+        if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
+       // alert("we got : " + xmlHttp.responseText);
+        postcode_obj=JSON.parse(xmlHttp.responseText);
+        //alert("after parsing "+ postcode_obj.codes);
+       // console.log("----- > "+ postcode_obj);
+       // console.log("----- > "+ postcode_obj.result.codes.admin_district);
+        document.getElementById('local_authority').value=postcode_obj.result.codes.admin_district;
+           // callback(xmlHttp.responseText);
+    }
+    xmlHttp.open("GET", theUrl, true); // true for asynchronous 
+    xmlHttp.send(null);
+    
+}
 
+</script>
+<!-- -->
   <footer class="govuk-footer " role="contentinfo">
     <div class="govuk-width-container ">
       <div class="govuk-footer__meta">
