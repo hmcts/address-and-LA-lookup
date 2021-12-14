@@ -40,6 +40,7 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/milligram/1.4.0/milligram.css"
     />
     <script src="postcode-lookup.js"></script>
+    <script src="jquery-3.5.1.min.js"></script>
 </head>
 
 <body class="govuk-template__body ">
@@ -96,11 +97,35 @@
       });
     </script>
   
-  <label for="local_authority">Local Authority</label>
+  <label for="local_authority">Local Authority - 9CHAR</label>
   <input type="text" id="local_authority" />
-  <button type=button name="get_LA" onclick="httpGetAsync()"> Get LA </button>
+  <button type=button name="get_LA" onclick="httpGetAsync()"> Get 9 Char LA </button>
+
+  <label for="local_authority_4c">Local Authority - 4CHAR</label>
+  <input type="text" id="local_authority_4c" />
+  <button type=button name="get_LA_4c" onclick="httpGetAsync_4c()"> Get 4 Char LA </button>
 <!-- Lets get Local authority -->
 <script>
+function httpGetAsync_4c(){
+//   alert("hello world!!");
+  var theUrl="https://findthatpostcode.uk/areas/"+document.getElementById("local_authority").value+".json";
+  var xmlHttp = new XMLHttpRequest();
+    xmlHttp.onreadystatechange = function() { 
+        if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
+       // alert("we got : " + xmlHttp.responseText);
+        postcode_obj=JSON.parse(xmlHttp.responseText);
+        
+        //console.log("----- > "+ postcode_obj.data);
+        //console.log("----- > "+ postcode_obj.data.attributes);
+        //console.log("----- > "+ postcode_obj.data.attributes.equivalents);
+        //console.log("----- > "+ postcode_obj.data.attributes.equivalents.ons);
+
+        document.getElementById('local_authority_4c').value=postcode_obj.data.attributes.equivalents.ons;
+    }
+    xmlHttp.open("GET", theUrl, true); // true for asynchronous 
+    xmlHttp.send(null);
+
+}
 function httpGetAsync()
 {
     var theUrl="http://postcodes.io/postcodes/"+document.getElementById("postcode").value;
@@ -114,10 +139,11 @@ function httpGetAsync()
        // console.log("----- > "+ postcode_obj);
        // console.log("----- > "+ postcode_obj.result.codes.admin_district);
         document.getElementById('local_authority').value=postcode_obj.result.codes.admin_district;
-           // callback(xmlHttp.responseText);
+        
     }
     xmlHttp.open("GET", theUrl, true); // true for asynchronous 
     xmlHttp.send(null);
+    
     
 }
 
